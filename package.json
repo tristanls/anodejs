@@ -12,10 +12,8 @@
     "node" : "0.4.x || 0.5.x"
   },
   "dependencies" : {
+    "async-events" : "x.x.x",
     "pkginfo" : "0.2.x"
-  },
-  "devDependencies" : {
-    "vows" : "0.5.x"
   },
   "private" : true
 }
