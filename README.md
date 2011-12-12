@@ -29,9 +29,9 @@ A quick note about `CoffeeScript`. Because of how `anode` actors are implemented
 Take a look at the examples in the `examples` folder. As of this writing, there
 are three non-trivial examples of setting up an actor configuration.
 
-1. `erlangMailbox.js`, run `coffee erlangMailbox.example.coffee`
-2. `lambda1.js`, run `coffee lambda1.example.coffee` ( you should see `42` )
-3. `lambda2.js`, run `coffee lambda2.example.coffee` ( you should see `true` and `false` )
+1. `erlangMailbox.coffee`, run `coffee erlangMailbox.example.coffee`
+2. `lambda1.coffee`, run `coffee lambda1.example.coffee` ( you should see `42` )
+3. `lambda2.coffee`, run `coffee lambda2.example.coffee` ( you should see `true` and `false` )
 
 Other examples show simpler functionality
 
