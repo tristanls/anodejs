@@ -1,7 +1,7 @@
 {
   "name" : "anode",
   "description" : "Humus inspired actor framework for Node.js",
-  "version" : "0.1.0",
+  "version" : "0.1.1",
   "author" : "Tristan Slominski <tristan.slominski@gmail.com>",
   "contributors" : [
     "Dale Schumacher <dale.schumacher@gmail.com>"

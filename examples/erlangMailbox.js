@@ -1,146 +1,76 @@
-var anode = require( '../lib/anode' ),
-    beh = anode.beh;
-
-var ErlangMailbox = exports;
-
-//
-// Initial lazy-initialization mailbox behavior
-//
-ErlangMailbox.mailbox_beh = beh( 'mailbox', function () {
-  
-  var next = create().withBehavior( mailbox.end_mailbox_beh( mailbox, this ) );
-  become( mailbox.root_mailbox_beh( mailbox, next ) );
-  raw( _ ).to( this );
-  
-}); // mailbox_beh
-
-//
-// End mailbox behavior
-//
-ErlangMailbox.end_mailbox_beh = beh( 'mailbox', 'root', {
-  
-  'cust, #recv, pred' : function () {
-    
-    var next = create().withBehavior( mailbox.end_mailbox_beh( mailbox, root ) );
-    become( mailbox.recv_mailbox_beh( mailbox, root, cust, pred, next ) );
-    
-  }, // cust, #recv, pred
-  
-  'cust, #send, m' : function () {
-    
-    var next = create().withBehavior( mailbox.end_mailbox_beh( mailbox, root ) );
-    become( mailbox.send_mailbox_beh( mailbox, root, m, next ) );
-    send( root ).to( cust );
-    
-  } // cust, #send, m
-  
-}); // end_mailbox_beh
-
-//
-// Receive mailbox behavior
-//
-ErlangMailbox.recv_mailbox_beh = beh( 'mailbox', 'root', 'cust', 'pred', 'next', {
-  
-  'cust2, #send, m' : function () {
-    
-    if ( pred( m ) ) {
-      
-      send( m ).to( cust );
-      become( mailbox.skip_mailbox_beh( next ) );
-      send( this, '#prune', next ).to( root );
-      send( root ).to( cust2 );
-      
-    } else {
-      
-      raw( _ ).to( next );
-      
+(function() {
+  var ErlangMailbox, anode, beh;
+  anode = require('../lib/anode');
+  beh = anode.beh;
+  ErlangMailbox = exports;
+  ErlangMailbox.mailbox_beh = beh(function() {
+    var next;
+    next = this.create(ErlangMailbox.end_mailbox_beh(this));
+    this.become(ErlangMailbox.root_mailbox_beh(next));
+    return this.raw(this._).to(this);
+  });
+  ErlangMailbox.end_mailbox_beh = beh('root', {
+    'cust, #recv, pred': function() {
+      var next;
+      next = this.create(ErlangMailbox.end_mailbox_beh(this.root));
+      return this.become(ErlangMailbox.recv_mailbox_beh(this.root, this.cust, this.pred, next));
+    },
+    'cust, #send, m': function() {
+      var next;
+      next = this.create(ErlangMailbox.end_mailbox_beh(this.root));
+      this.become(ErlangMailbox.send_mailbox_beh(this.root, this.m, next));
+      return this.send(this.root).to(this.cust);
     }
-    
-  }, // cust2, #send, m
-  
-  '$next, #prune, next2' : function () {
-    
-    become( mailbox.recv_mailbox_beh( mailbox, root, cust, pred, next2 ) );
-    
-  }, // $next, #prune, next2
-  
-  '_' : function () {
-    
-    raw( _ ).to( next );
-    
-  } // _
-  
-}); // recv_mailbox_beh
-
-//
-// Root mailbox behavior
-//
-ErlangMailbox.root_mailbox_beh = beh( 'mailbox', 'next', {
-  
-  '$next, #prune, next2' : function () {
-    
-    become( mailbox.root_mailbox_beh( mailbox, next2 ) );
-    
-  }, // $next, #prune, next2
-  
-  '_' : function () {
-    
-    raw( _ ).to( next );
-    
-  } // _
-  
-}); // root_mailbox_beh
-
-//
-// Send mailbox behavior
-//
-ErlangMailbox.send_mailbox_beh = beh( 'mailbox', 'root', 'm', 'next', {
-  
-  'cust, #recv, pred' : function () {
-    
-    if ( pred( m ) ) {
-      
-      send( m ).to( cust );
-      become( mailbox.skip_mailbox_beh( mailbox, next ) );
-      send( this, '#prune', next ).to( root );
-      
-    } else {
-      
-      raw( _ ).to( next );
-      
+  });
+  ErlangMailbox.recv_mailbox_beh = beh('root', 'cust', 'pred', 'next', {
+    'cust2, #send, m': function() {
+      if (this.pred(this.m)) {
+        this.send(this.m).to(this.cust);
+        this.become(ErlangMailbox.skip_mailbox_beh(this.next));
+        this.send(this, '#prune', this.next).to(this.root);
+        return this.send(this.root).to(this.cust2);
+      } else {
+        return this.raw(this._).to(this.next);
+      }
+    },
+    '$next, #prune, next2': function() {
+      return this.become(ErlangMailbox.recv_mailbox_beh(this.root, this.cust, this.pred, this.next2));
+    },
+    '_': function() {
+      return this.raw(this._).to(this.next);
     }
-    
-  }, // cust, #recv, pred
-  
-  '$next, #prune, next2' : function () {
-    
-    become( mailbox.send_mailbox_beh( mailbox, root, m, next2 ) );
-    
-  }, // $next, '#prune', next2
-  
-  '_' : function () {
-    
-    raw( _ ).to( next );
-    
-  } // _
-  
-}); // send_mailbox_beh
-
-//
-// Skip mailbox behavior
-//
-ErlangMailbox.skip_mailbox_beh = beh( 'mailbox', 'next', {
-  
-  '$next, #prune, next2' : function () {
-    
-    become( mailbox.skip_mailbox_beh( mailbox, next2 ) );
-    
-  }, // $next, #prune, next2
-  
-  '_' : function () {
-    
-    raw( _ ).to( next );
-    
-  } // _
-  
-}); // skip_mailbox_beh
+  });
+  ErlangMailbox.root_mailbox_beh = beh('next', {
+    '$next, #prune, next2': function() {
+      return this.become(ErlangMailbox.root_mailbox_beh(this.next2));
+    },
+    '_': function() {
+      return this.raw(this._).to(this.next);
+    }
+  });
+  ErlangMailbox.send_mailbox_beh = beh('root', 'm', 'next', {
+    'cust, #recv, pred': function() {
+      if (this.pred(this.m)) {
+        this.send(this.m).to(this.cust);
+        this.become(ErlangMailbox.skip_mailbox_beh(this.next));
+        return this.send(this, '#prune', this.next).to(this.root);
+      } else {
+        return this.raw(this._).to(this.next);
+      }
+    },
+    '$next, #prune, next2': function() {
+      return this.become(ErlangMailbox.send_mailbox_beh(this.root, this.m, this.next2));
+    },
+    '_': function() {
+      return this.raw(this._).to(this.next);
+    }
+  });
+  ErlangMailbox.skip_mailbox_beh = beh('next', {
+    '$next, #prune, next2': function() {
+      return this.become(ErlangMailbox.skip_mailbox_beh(this.next2));
+    },
+    '_': function() {
+      return this.raw(this._).to(this.next);
+    }
+  });
+}).call(this);
