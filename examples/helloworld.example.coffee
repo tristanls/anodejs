@@ -4,14 +4,12 @@
 # (C) 2011 Tristan Slominski
 #
 anode = require '../lib/anode'
-require 'coffee-script' # allows direct 'require' of coffee files
-http = require '../src/http'
 
 # create a new actor configuration
 cnf = new anode.Configuration()
 
 # create the http actor
-http_actor = cnf.actor http.http_beh()
+http_actor = cnf.actor anode.http.http_beh()
 
 # create the hello world actor
 helloworld = cnf.actor anode.beh(
