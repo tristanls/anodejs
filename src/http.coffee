@@ -150,7 +150,7 @@ response_beh = anode.beh 'res'
 
   'cust, #writeContinue' : ->
     
-    @res.wwriteContinue()
+    @res.writeContinue()
     if @cust # ack requested
       @send( @, '#writeContinue' ).to @cust
       
