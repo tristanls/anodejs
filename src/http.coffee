@@ -116,6 +116,20 @@ initializedServer_beh = anode.beh 'server',
 #
 request_beh = anode.beh '_cust', 'req'
 
+  # attempt to match the explicit $req first before trying generic 'cust'
+
+  '$req, #close' : ->
+
+    @send( @, '#close' ).to @_cust
+  
+  '$req, #data, chunk' : ->
+
+    @send( @, '#data', @chunk ).to @_cust
+
+  '$req, #end' : ->
+
+    @send( @, '#end' ).to @_cust
+
   'cust, #connection' : ->
     
     # TODO: implement net.Socket as actor
@@ -163,19 +177,7 @@ request_beh = anode.beh '_cust', 'req'
   'cust, #url' : ->
     
     @send( @, '#url', @req.url ).to @_cust
-    
-  '$req, #close' : ->
-
-    @send( @, '#close' ).to @_cust
-    
-  '$req, #data, chunk' : ->
-
-    @send( @, '#data', @chunk ).to @_cust
-
-  '$req, #end' : ->
-
-    @send( @, '#end' ).to @_cust
-    
+        
 #
 # An actor wrapper for the response object
 #

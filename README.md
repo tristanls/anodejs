@@ -52,6 +52,64 @@ To run the server, go into the `examples` directory and execute it with `coffee`
 
 *note: not all of the Node.js `'http'` functionality has been wrapped yet.
 
+A more involved echo server using sockets directly can be found in `examples/echoserver.example.coffee`
+
+```coffeescript
+anode = require 'anode'
+
+# set debug mode to see the messages
+cnf = new anode.Configuration debug : true
+
+# we are naming our actors here to make debug output friendlier
+netServer = cnf.actor 'netServer', anode.net.server_beh()
+echoServer = cnf.actor 'echoServer', anode.beh( 'netServer'
+
+  '#start' : ->
+
+    @send( @, '#listen', 8124 ).to @netServer
+
+  '$netServer, #listen' : ->
+
+    @send( 'server bound' ).to cnf.console.log
+
+  '$netServer, #connection, socket' : ->
+
+    @send( 'server connected' ).to cnf.console.log
+
+    # request ack after #write completes by including self (@)
+    @send( @, '#write', 'hello\r\n' ).to @socket
+
+  'socket, #end' : ->
+
+    @send( 'server disconnected' ).to cnf.console.log
+
+  # once socket gives us its socket object
+  'socket, #socket, socketObj' : ->
+  
+    # pipe the socket to itself to echo
+    # don't care about confirmation so send null as customer
+    @send( null, '#pipe', @socketObj ).to @socket
+
+  # write ack
+  'socket, #write, _' : ->
+
+    # request the actual socket object so we can pipe to it
+    @send( @, '#socket' ).to @socket
+
+)( netServer ) # echoServer
+
+cnf.send( '#start' ).to echoServer
+```
+
+To run the server, go into the `examples` directory and execute it with `coffee`:
+
+    % coffee echoserver.example.coffee
+    server bound
+
+You can connect to it using `telnet`:
+
+    % telnet localhost 8124
+
 ### Actors
 
 The intent behind `anode` is to provide a way to write "pure" actors in JavaScript. Over the years, the idea of what actors are has evolved quite a bit. In the context of what `anode` is trying to provide, "pure" actors are actors as defined by [Carl Hewitt](http://hdl.handle.net/1721.1/6272) and elaborated by [Gul Agha](http://hdl.handle.net/1721.1/6952). Dale Schumacher (the author of pure actor language Humus on which `anode` is inspired) provides an excellent introduction to this perspective on actors on his blog [here](http://www.dalnefre.com/wp/2010/05/deconstructing-the-actor-model/).
