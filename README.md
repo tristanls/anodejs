@@ -77,7 +77,7 @@ Other examples show simpler functionality:
 3. `simple.example.coffee` shows a simple counter system, run `coffee simple.example.coffee`
 4. `optional.example.coffee` shows use of optional parameters in a message, run `coffee optional.example.coffee`
 
-## Licence
+## License
 
 (The MIT License)
 
