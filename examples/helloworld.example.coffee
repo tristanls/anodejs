@@ -9,23 +9,20 @@ anode = require '../lib/anode'
 cnf = new anode.Configuration()
 
 # create the http actor
-http_actor = cnf.actor anode.http.http_beh()
+httpServer = cnf.actor anode.http.server_beh()
 
-# create the hello world actor
-helloworld = cnf.actor anode.beh(
+# create the hello world application actor
+helloworld = cnf.actor anode.beh( 'httpServer'
 
-  'http, #created, server' : ->
-    @send( @, '#listen', 8080, '127.0.0.1' ).to @server
+  '#start' : ->
+    @send( @, '#listen', 8080, '127.0.0.1' ).to @httpServer
+
+  '$httpServer, #listen' : ->
+    @send( 'Server running at http://127.0.0.1:8080/' ).to cnf.console.log
     
-  'server, #listening, port, host' : ->
-    @send( 'Server running at http://' + @host + ':' + @port + '/' ).to \
-      cnf.console.log
-    
-  'server, #request, request, response' : ->
+  '$httpServer, #request, request, response' : ->
     @send( null, '#end', 'Hello Actor World\n' ).to @response
 
-)() # helloworld
+)( httpServer ) # helloworld
 
-# send the #createServer message to http actor with helloworld as the customer
-# for the '#created' message
-cnf.send( helloworld, '#createServer' ).to http_actor
+cnf.send( '#start' ).to helloworld

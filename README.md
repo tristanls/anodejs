@@ -28,25 +28,29 @@ anode = require 'anode'
 
 cnf = new anode.Configuration()
 
-http_actor = cnf.actor anode.http.http_beh()
-helloworld = cnf.actor anode.behavior(
-  'http, #created, server' : ->
-    @send( @, '#listen', 8080, '127.0.0.1' ).to @server
-  'server, #listening, port, host' : ->
-    @send( 'Server running at http://' + @host + ':' + @port + '/' ).to cnf.console.log
-  'server, #request, request, response' : ->
-    @send( null, '#end', 'Hello Actor World\n' ).to @response
-)()
+httpServer = cnf.actor anode.http.server_beh()
+helloworld = cnf.actor anode.behavior( 'httpServer'
 
-cnf.send( helloworld, '#createServer' ).to http_actor
+  '#start' : ->
+    @send( @, '#listen', 8080, '127.0.0.1' ).to @httpServer
+
+  '$httpServer, #listen' : ->
+    @send( 'Server running at http://127.0.0.1:8080/' ).to cnf.console.log
+
+  '$httpServer, #request, request, response' : ->
+    @send( null, '#end', 'Hello Actor World\n' ).to @response  
+
+)( httpServer ) # helloworld
+
+cnf.send( '#start' ).to helloworld
 ```
 
 To run the server, go into the `examples` directory and execute it with `coffee`:
 
-    '% coffee helloworld.example.coffee
+    % coffee helloworld.example.coffee
     Server running at http://127.0.0.1:8080/
 
-*note: not all of the `node` `'http'` functionality has been wrapped yet.
+*note: not all of the Node.js `'http'` functionality has been wrapped yet.
 
 ### Actors
 
@@ -82,7 +86,7 @@ Other examples show simpler functionality:
 
 (The MIT License)
 
-Copyright (c) 2011 Tristan Slominski <tristan.slominski@gmail.com>
+Copyright (c) 2011 Tristan Slominski
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
