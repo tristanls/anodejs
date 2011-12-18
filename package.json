@@ -1,13 +1,13 @@
 {
   "name" : "anode",
   "description" : "Humus inspired actor framework for Node.js",
-  "version" : "0.1.4",
+  "version" : "0.1.5",
   "author" : "Tristan Slominski <tristan.slominski@gmail.com>",
   "contributors" : [
     "Dale Schumacher <dale.schumacher@gmail.com>"
   ],
   "keywords" : [ "actor", "actors", "scala", "erlang", "message passing" ],
-  "main" : "./lib/actor.js",
+  "main" : "./lib/anode.js",
   "engines" : {
     "node" : ">= 0.4.x"
   },
