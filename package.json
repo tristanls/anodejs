@@ -1,7 +1,7 @@
 {
   "name" : "anode",
   "description" : "Humus inspired actor framework for Node.js",
-  "version" : "0.1.1",
+  "version" : "0.1.2",
   "author" : "Tristan Slominski <tristan.slominski@gmail.com>",
   "contributors" : [
     "Dale Schumacher <dale.schumacher@gmail.com>"
@@ -9,11 +9,11 @@
   "keywords" : [ "actor", "actors", "scala", "erlang", "message passing" ],
   "main" : "./lib/actor.js",
   "engines" : {
-    "node" : "0.4.x || 0.5.x"
+    "node" : ">= 0.6.x"
   },
   "dependencies" : {
-    "async-events" : "x.x.x",
+    "async-events" : "0.1.1",
+    "coffee-script" : "1.1.2",
     "pkginfo" : "0.2.x"
-  },
-  "private" : true
+  }
 }
