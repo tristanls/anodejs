@@ -7,7 +7,7 @@ Humus inspired actor framework for Node.js
 ### Installing node
 Follow instructions at `http://nodejs.org/`
 
-### Installing npm ( node package manager )
+### Installing npm (node package manager)
 <pre>
   curl http://npmjs.org/install.sh | sh
 </pre>
@@ -23,22 +23,23 @@ A quick note about `CoffeeScript`... Because of how `anode` actors are implement
 
 Taking a pointer from Node.js, here is an example webserver in anode included in `examples/helloworld.example.coffee`
   
-    anode = require 'anode'
-    
-    cnf = new anode.Configuration()
-    
-    http_actor = cnf.actor anode.http.http_beh()
-    helloworld = cnf.actor anode.behavior(
-      'http, #created, server' : ->
-        @send( @, '#listen', 8080, '127.0.0.1' ).to @server
-      'server, #listening, port, host' : ->
-        @send( 'Server running at http://' + @host + ':' + @port + '/' ).to \
-          cnf.console.log
-      'server, #request, request, response' : ->
-        @send( null, '#end', 'Hello Actor World\n' ).to @response
-    )()
-    
-    cnf.send( helloworld, '#createServer' ).to http_actor
+```coffeescript
+anode = require 'anode'
+
+cnf = new anode.Configuration()
+
+http_actor = cnf.actor anode.http.http_beh()
+helloworld = cnf.actor anode.behavior(
+  'http, #created, server' : ->
+    @send( @, '#listen', 8080, '127.0.0.1' ).to @server
+  'server, #listening, port, host' : ->
+    @send( 'Server running at http://' + @host + ':' + @port + '/' ).to cnf.console.log
+  'server, #request, request, response' : ->
+    @send( null, '#end', 'Hello Actor World\n' ).to @response
+)()
+
+cnf.send( helloworld, '#createServer' ).to http_actor
+```
 
 To run the server, go into the `examples` directory and execute it with `coffee`:
 
@@ -67,8 +68,8 @@ Take a look at the examples in the `examples` folder. As of this writing, there
 are three non-trivial examples of setting up an actor configuration:
 
 1. `erlangMailbox.coffee` is an implementation of Erlang-style mailbox modeled on Dale's [blog post](http://www.dalnefre.com/wp/2011/10/erlang-style-mailboxes/), run `coffee erlangMailbox.example.coffee`
-2. `lambda1.coffee` is an implementation of lambda calculus modeled on Dale's [blog post](http://www.dalnefre.com/wp/2010/08/evaluating-expressions-part-1-core-lambda-calculus/), run `coffee lambda1.example.coffee` ( you should see `42` )
-3. `lambda2.coffee` is a follow-on implementation of lambda calculus modeled on the second [blog post](http://www.dalnefre.com/wp/2010/09/evaluating-expressions-part-2-conditional-special-form/) in that series, run `coffee lambda2.example.coffee` ( you should see `true` and `false` )
+2. `lambda1.coffee` is an implementation of lambda calculus modeled on Dale's [blog post](http://www.dalnefre.com/wp/2010/08/evaluating-expressions-part-1-core-lambda-calculus/), run `coffee lambda1.example.coffee` (you should see `42`)
+3. `lambda2.coffee` is a follow-on implementation of lambda calculus modeled on the second [blog post](http://www.dalnefre.com/wp/2010/09/evaluating-expressions-part-2-conditional-special-form/) in that series, run `coffee lambda2.example.coffee` (you should see `true` and `false`)
 
 Other examples show simpler functionality:
 
