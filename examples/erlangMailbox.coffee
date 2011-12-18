@@ -1,3 +1,11 @@
+# 
+# erlangMailbox.coffee: An implementation of Erlang-style mailbox based on work of Dale Schumacher
+#
+# see: http://www.dalnefre.com/wp/2011/10/erlang-style-mailboxes/
+#
+# (C) 2011 Tristan Slominski
+#
+
 anode = require '../lib/anode'
 beh = anode.beh
 
