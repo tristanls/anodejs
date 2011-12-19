@@ -33,7 +33,9 @@ Actor processing starts on receipt of a message. In response to a message, an ac
 
 A quick note about `CoffeeScript`... Because of how `anode` actors are implemented, the code relies heavily on the `this` keyword. There is nothing preventing you from writing anode actors in `JavaScript`, however, the `CoffeeScript` syntax just happens to perfectly fit what each actor behavior is trying to express, so I highly recommend taking look at `anode` through the `CoffeeScript` lens.
 
-Taking a pointer from Node.js, here is an example webserver in anode included in `examples/helloworld.example.coffee`
+### http webserver
+
+Taking a pointer from Node.js, here is an example webserver in `anode` included in `examples/helloworld.example.coffee`
   
 ```coffeescript
 anode = require 'anode'
@@ -63,6 +65,8 @@ To run the server, go into the `examples` directory and execute it with `coffee`
     Server running at http://127.0.0.1:8080/
 
 *note: not all of the Node.js `'http'` functionality has been wrapped yet.
+
+### socket server
 
 A more involved echo server using sockets directly can be found in `examples/echoserver.example.coffee`
 
