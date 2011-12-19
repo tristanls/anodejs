@@ -149,7 +149,7 @@ Other examples show simpler functionality:
 2. `valuematch.example.coffee` shows how `$` syntax matches pattern by evaluating the variable, run `coffee valuematch.example.coffee`
 3. `simple.example.coffee` shows a simple counter system, run `coffee simple.example.coffee`
 4. `optional.example.coffee` shows use of optional parameters in a message, run `coffee optional.example.coffee`
-5. `assert.example.coffee` shows the user of assertions, run `coffee assert.example.coffee`
+5. `assert.example.coffee` shows the use of assertions as well as demonstrating the `anode` message "stack trace" in case an unexpected error occurs, run `coffee assert.example.coffee`
 
 ## License
 
