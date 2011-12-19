@@ -84,10 +84,12 @@ echoServer = cnf.actor 'echoServer', anode.beh( 'netServer'
 
     @send( @, '#listen', 8124 ).to @netServer
 
+  # response from netServer acknowledging that it is listening and ready
   '$netServer, #listen' : ->
 
     @send( 'server bound' ).to cnf.console.log
 
+  # message from netServer when it receives a new connection
   '$netServer, #connection, socket' : ->
 
     @send( 'server connected' ).to cnf.console.log
@@ -120,6 +122,10 @@ cnf.send( '#start' ).to echoServer
 To run the server, go into the `examples` directory and execute it with `coffee`:
 
     % coffee echoserver.example.coffee
+    FROM [configuration] TO [echoServer::10] SEND [ '#start' ]
+    FROM [echoServer::10] TO [netServer::9] SEND [ '[echoServer::10]', '#listen', '8124' ]
+    FROM [netServer::9] TO [echoServer::10] SEND [ '[netServer::9]', '#listen' ]
+    FROM [echoServer::10] TO [console.log::1] SEND [ 'server bound' ]
     server bound
 
 You can connect to it using `telnet`:
@@ -143,6 +149,7 @@ Other examples show simpler functionality:
 2. `valuematch.example.coffee` shows how `$` syntax matches pattern by evaluating the variable, run `coffee valuematch.example.coffee`
 3. `simple.example.coffee` shows a simple counter system, run `coffee simple.example.coffee`
 4. `optional.example.coffee` shows use of optional parameters in a message, run `coffee optional.example.coffee`
+5. `assert.example.coffee` shows the user of assertions, run `coffee assert.example.coffee`
 
 ## License
 
